@@ -1,0 +1,88 @@
+<div class="product mb-0 rounded-0 w-100">
+  <figure class="product-media bg-white">
+    <span class="product-label label-sale" *ngIf="product.sale">
+      Sale {{
+        (product.productSale.productSaleType.typeName == 'Fixed' ?
+        "$" + product.productSale.discount :
+        product.productSale.discount + "%") }}
+    </span>
+    <span class="product-label label-new" *ngIf="product.new_">New</span>
+    <span class="product-label label-top" style="margin-top: 2px" *ngIf="product.top">Top</span>
+
+
+    <a [routerLink]="'/product/detail/' + product.slug">
+      <molla-image [src]="PRODUCT_IMAGE_DIRECTORY + product.imageUrl" alt="Product" class="product-image">
+      </molla-image>
+    </a>
+
+  </figure>
+
+  <div class="product-body position-static bg-transparent">
+    <div class="product-cat overflow-hidden my-2 mt-0 font-weight-normal">
+      <span>
+        <a [routerLink]="['/shop/list']" [queryParams]="{category: product.catalog.catalogName}">
+          {{ product.catalog.catalogName }}
+        </a>
+      </span>
+    </div>
+
+    <h3 class="product-title overflow-hidden letter-spacing-normal">
+      <a [routerLink]="'/product/detail/' + product.slug">{{ product.productName }}</a>
+    </h3>
+
+    <div class="product-price font-weight-bold d-flex align-items-center mb-0">
+      <ng-container *ngIf="hasOnlyOnePrice; else elseBlock">
+        <ng-container *ngIf="product.productSale === null; else discountBlock">
+          {{ maxPrice | currency: 'USD'}}
+        </ng-container>
+        <ng-template #discountBlock>
+          <span class="old-price mr-3">
+            {{ maxPrice | currency: 'USD' }}
+          </span>
+          <span>
+            {{ calcPriceAfterSale(product.minPrice, product.productSale) | currency: "USD"}}
+          </span>
+        </ng-template>
+      </ng-container>
+
+      <ng-template #elseBlock>
+        <ng-container *ngIf="product.productSale === null; else discountBlock2">
+          <span style="font-weight: bold">
+            {{minPrice | currency: 'USD'}}&ndash;{{maxPrice | currency: 'USD'}}
+          </span>
+        </ng-container>
+        <ng-template #discountBlock2>
+          <span class="old-price">
+            {{minPrice | currency: 'USD'}}&ndash;{{maxPrice | currency: 'USD'}}
+          </span>
+          <span >
+            {{ calcPriceAfterSale(product.minPrice, product.productSale) | currency: "USD" }} -
+            {{ calcPriceAfterSale(product.maxPrice, product.productSale) | currency: "USD" }}
+          </span>
+        </ng-template>
+      </ng-template>
+    </div>
+  </div>
+
+  <span class="sold-text font-weight-normal text-light position-absolute" *ngIf="isShownSold">
+    Sold: {{ product.totalSold }}
+  </span>
+  <div class="product-footer bg-white rounded-0 d-block position-absolute">
+    <div class="ratings-container text-truncate">
+      <div class="ratings">
+        <div class="ratings-val" [style.width]="product.avgRating * 20 + '%'"></div>
+        <span class="tooltip-text font-weight-normal">{{ product.avgRating.toFixed(2) }}</span>
+      </div>
+      <span class="ratings-text font-weight-normal">( {{ product.totalRating }} Reviews )</span>
+    </div>
+    <div class="product-action d-flex justify-content-center flex-column align-items-center position-relative">
+      <button
+        class="btn btn-product font-weight-normal text-uppercase text-truncate  btn-outline-primary-2 btn-outline-primary-2"
+        (click)="addToWishlist($event)">
+        <span class="border-0">
+          <i class="icon-heart-o"></i>
+          {{ inWishlist ? 'Go to Wishlist' : 'Add to Wishlist' }} </span>
+      </button>
+    </div>
+  </div>
+</div>

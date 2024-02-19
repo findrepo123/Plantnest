@@ -1,0 +1,154 @@
+<form [formGroup]="billingForm">
+  <h2 class="checkout-title">Billing Details</h2>
+  <div class="row">
+    <div class="col-12">
+      <label>Full Name *</label>
+      <input type="text" class="form-control" formControlName="fullName" (blur)="validateField('fullName')">
+
+      <div class="alert alert-danger mt-1" *ngIf="blurred['fullName'] && billingForm.get('fullName').invalid &&
+          (billingForm.get('fullName').dirty || billingForm.get('fullName').touched)">
+        <div *ngIf="billingForm.get('fullName').errors['notblank']">
+          Full Name is required
+        </div>
+        <div *ngIf="billingForm.get('fullName').errors['minlength']">
+          Full Name must have at least 3 character
+        </div>
+        <div *ngIf="billingForm.get('fullName').errors['maxlength']">
+          Full Name must not exceed 100 characters
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-6 col-md-12">
+      <label>Email *</label>
+      <input type="email" class="form-control" formControlName="email" [disabled]="true">
+    </div>
+    <div class="col-lg-6 col-md-12">
+      <label>Phone Number *</label>
+      <input type="tel" name="tel" class="form-control" formControlName="phoneNumber"
+        (blur)="validateField('phoneNumber')">
+      <div class="alert alert-danger mt-1" *ngIf="blurred['phoneNumber'] && billingForm.get('phoneNumber').invalid &&
+				(billingForm.get('phoneNumber').dirty || billingForm.get('phoneNumber').touched)">
+        <div *ngIf="billingForm.get('phoneNumber').errors['pattern']">
+          Phone number must be exactly 10 digits in length and can only contain numerical digits
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12">
+      <label>ADDRESS INFORMATION *</label>
+      <br>
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" name="inlineRadioOptions" value="new"
+          formControlName="addressOption">
+        <label class="form-check-label">New Address</label>
+      </div>
+      <div class="form-check form-check-inline" *ngIf="loadedAddresses && existingAddresses.length != 0">
+        <input class="form-check-input" type="radio" name="inlineRadioOptions" value="existing"
+          formControlName="addressOption">
+        <label class="form-check-label">Use Existing Address</label>
+      </div>
+    </div>
+    <ng-container *ngIf="billingForm.get('addressOption').value === 'new'">
+      <div class="col-lg-6 col-sm-12">
+        <label>Province *</label>
+        <select name="size" id="size" class="form-control" formControlName="province" (ngModelChange)="loadDistricts()">
+          <option [ngValue]="null">Select a province</option>
+          <option [ngValue]="province" *ngFor="let province of provinces">
+            {{ province.name }}
+          </option>
+        </select>
+        <div class="alert alert-danger mt-1" *ngIf="billingForm.get('province').invalid &&
+          (billingForm.get('province').dirty || billingForm.get('province').touched)">
+          <div *ngIf="billingForm.get('province').errors['required']">
+            Province is required
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6 col-sm-12">
+        <label>District *</label>
+        <select name="size" id="size" class="form-control" formControlName="district" (ngModelChange)="loadWards()">
+          <option [ngValue]="null">Select a district</option>
+          <option [ngValue]="district" *ngFor="let district of districts">
+            {{ district.fullName }}
+          </option>
+        </select>
+        <div class="alert alert-danger mt-1" *ngIf="billingForm.get('district').invalid &&
+          (billingForm.get('district').dirty || billingForm.get('district').touched)">
+          <div *ngIf="billingForm.get('district').errors['required']">
+            District is required
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6 col-sm-12">
+        <label>Ward *</label>
+        <select name="size" id="size" class="form-control" formControlName="ward">
+          <option [ngValue]="null">Select a ward</option>
+          <option [ngValue]="ward" *ngFor="let ward of wards">
+            {{ ward.fullName }}
+          </option>
+        </select>
+        <div class="alert alert-danger mt-1" *ngIf="billingForm.get('ward').invalid &&
+          (billingForm.get('ward').dirty || billingForm.get('ward').touched)">
+          <div *ngIf="billingForm.get('ward').errors['required']">
+            Ward is required
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6 col-sm-12">
+        <label>House number and Street name *</label>
+        <input type="text" class="form-control" formControlName="roadName" (blur)="validateField('roadName')">
+
+        <div class="alert alert-danger mt-1"
+            *ngIf="blurred['roadName'] && billingForm.get('roadName').invalid &&
+            (billingForm.get('roadName').dirty || billingForm.get('roadName').touched)">
+          <div *ngIf="billingForm.get('roadName').errors['notblank']">
+            House number and street name is required
+          </div>
+          <div *ngIf="billingForm.get('roadName').errors['maxlength']">
+            House number and street name must not exceed 100 characters
+          </div>
+        </div>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="billingForm.get('addressOption').value === 'existing'">
+      <div class="col-lg-6 col-sm-12">
+        <label>Existing Address *</label>
+        <select name="size" id="size" class="form-control" formControlName="address">
+          <option [ngValue]="null">Select a address</option>
+          <option [ngValue]="address" *ngFor="let address of existingAddresses">
+            {{ addressService.getAddressStringFormAddress(address) }}
+          </option>
+        </select>
+        <div class="alert alert-danger mt-1" *ngIf="billingForm.get('address').invalid &&
+          (billingForm.get('address').dirty || billingForm.get('address').touched)">
+          <div *ngIf="billingForm.get('address').errors['required']">
+            Address is required
+          </div>
+        </div>
+      </div>
+    </ng-container>
+    <br>
+    <div class="col-6">
+      <label>Coupon Code</label>
+      <input type="text" class="form-control" formControlName="couponCode"
+        (blur)="validateField('couponCode'); applyCoupon()"
+        (keyup.enter)="applyCoupon()">
+
+      <div class="alert alert-success mt-1" *ngIf="appliedCoupon != null && appliedCouponSuccessMessage">
+        <p style="color: white" [innerHTML]="appliedCouponSuccessMessage"></p>
+      </div>
+
+      <div class="alert alert-danger mt-1"
+          *ngIf="blurred['couponCode'] && billingForm.get('couponCode').invalid &&
+          (billingForm.get('couponCode').dirty || billingForm.get('couponCode').touched)">
+        <div *ngIf="billingForm.get('couponCode').errors['couponNotExist']">
+          Coupon Code does not exist
+        </div>
+        <div *ngIf="billingForm.get('couponCode').errors['couponNotExist'] !== true &&
+            billingForm.get('couponCode').errors['couponCantUse']">
+          Coupon Code cannot be used (it may have expired)
+        </div>
+      </div>
+    </div>
+  </div>
+</form>

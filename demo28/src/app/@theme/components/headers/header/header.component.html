@@ -1,0 +1,60 @@
+<header class="header header-28 bg-transparent">
+  <div class="promo-top w-100 h-auto text-center"
+    style="background-image: url(assets/images/home/promo.jpg); background-color: #87bbc7;">
+  </div>
+  <div class="header-top font-weight-normal text-light" style="font-size: 1.4rem">
+    <div [ngClass]="containerClass">
+
+      <div class="header-right">
+        <ul class="top-menu">
+          <li>
+            <a *ngIf="!authenService.isLoggedIn() && screenWidth <= 768" href="javascript:;"
+              (click)="showLoginModal($event)">
+              <i class="icon-user"></i>
+              Login/Register
+            </a>
+            <a *ngIf="authenService.isLoggedIn()" href="javascript:;" (click)="logout()">
+              <i class="icon-angle-right"></i>
+              Logout
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="sticky-wrapper" [style.height]="utilsService.isSticky ? utilsService.stickyHeight + 'px' : '' ">
+    <div class="header-middle sticky-header" [class.fixed]="utilsService.isSticky">
+      <div [ngClass]="containerClass">
+        <div class="header-left">
+          <molla-mobile-button></molla-mobile-button>
+
+          <a routerLink="/" class="logo">
+            <img src="assets/images/home/logo.png" alt="PlantNest" width="200" height="30">
+          </a>
+
+          <molla-main-menu></molla-main-menu>
+        </div>
+
+        <div class="header-right">
+          <molla-header-search style="width: 100%;"></molla-header-search>
+
+
+          <molla-wishlist-menu [wishlistQty]="wishCount"></molla-wishlist-menu>
+
+          <molla-cart-menu></molla-cart-menu>
+
+          <ng-container *ngIf="authenService.isLoggedIn()">
+            <molla-account></molla-account>
+          </ng-container>
+
+          <ng-container *ngIf="!authenService.isLoggedIn() && screenWidth > 768">
+            <button class="btn btn-outline-primary-2 rounded ml-5 hide-on-mobile" (click)="showLoginModal($event)">
+              <i class="icon-user" style="font-size:1.7rem !important"></i>
+              Login/Register
+            </button>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>

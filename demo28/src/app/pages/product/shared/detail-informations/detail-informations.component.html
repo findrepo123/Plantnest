@@ -1,0 +1,92 @@
+<div class="product-details product-details-centered product-details-separator">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6">
+        <h1 class="product-title">{{ product.productName }}</h1>
+
+        <div class="ratings-container">
+          <div class="ratings">
+            <div class="ratings-val" [style.width]="product.avgRating * 20 + '%'"></div>
+            <span class="tooltip-text">{{ product.avgRating.toFixed(2) }}</span>
+          </div>
+          <span>( {{ product.totalRating }} Reviews )</span>
+          <span>( {{ product.totalSold }} Sold )</span>
+        </div>
+
+        <product-price [product]="product" [selectedVariant]="selectedVariant"></product-price>
+
+        <div class="product-content">
+          <p [innerHTML]="product.description"></p>
+        </div>
+
+      </div>
+
+      <div class="col-md-6">
+        <div class="product-details-action mb-1">
+
+          <div>
+            <div class="details-filter-row details-row-size">
+              <label for="size">Size:</label>
+              <div class="select-custom">
+                <select name="size" id="size" class="form-control" [(ngModel)]="selectedVariant"
+                  (ngModelChange)="selectVariant(selectedVariant)">
+                  <option [ngValue]="null">Select a size</option>
+                  <option [ngValue]="variant" *ngFor="let variant of product.productVariants">
+                    {{ variant.productSize.sizeName }}
+                  </option>
+                </select>
+              </div>
+
+              <a href="javascript:;" class="size-guide mr-4"><i class="icon-th-list"></i>size guide</a>
+              <ng-container *ngIf="selectedVariant != null">
+                {{ "In stock: " + selectedVariant.quantity}}
+              </ng-container>
+            </div>
+          </div>
+          <div class="details-action-col">
+            <molla-quantity-input [max]="maxQuantity" [value]="qty" (changeQty)="onChangeQty($event)"
+              [disabled]="selectedVariant == null" adClass="mr-2 mr-sm-4">
+            </molla-quantity-input>
+
+            <a href="javascript:;" class="btn-product btn-cart"
+                [class.btn-disabled]="( product.productVariants.length > 0 && !( selectedVariant != null ) )"
+                (click)="addCart($event)">
+              <span>add to cart</span>
+            </a>
+          </div>
+
+          <div class="details-action-wrapper">
+            <a href="#!" class="btn-product btn-wishlist" style="justify-content: start !important">
+              <span>{{product.totalLikes}}</span>
+            </a>
+
+            <a href="javascript:;" class="btn-product btn-wishlist" [class.added-to-wishlist]="inWishlist"
+              (click)="addToWishlist($event)">
+              <span>{{ inWishlist ? 'Go to Wishlist' : 'Add to Wishlist' }} </span>
+            </a>
+          </div>
+        </div>
+
+        <div class="product-details-footer details-footer-col">
+          <div class="product-cat">
+            <span>Catalog:</span>
+            <span>
+              <a [routerLink]="['/shop/list']" [queryParams]="{catalog: product.catalog.catalogName.toLowerCase()}">
+                {{ product.catalog.catalogName }}
+              </a>
+            </span>
+          </div>
+          <div class="product-cat w-100 text-truncate">
+            <span>Level of Difficulty in Growing Plants:</span>
+            <span>
+              <a [routerLink]="['/shop/list']" [queryParams]="{level: product.plantingDifficultyLevel.level}">
+                {{product.plantingDifficultyLevel.level}}
+              </a>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

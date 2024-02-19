@@ -1,0 +1,66 @@
+<ng-container *ngIf="selectedVariant == null || selectedVariant == ''; else chosenVariant">
+  <ng-container *ngIf="hasOnlyOnePrice; else twoPriceBlock">
+    <div class="product-price">
+      <ng-container *ngIf="product.productSale === null; else discountBlock">
+        <span class="font-weight-bold">
+          {{ product.maxPrice | currency : "USD" }}
+        </span>
+      </ng-container>
+
+      <ng-template #discountBlock>
+        <span class="old-price mr-5">
+          {{ product.maxPrice | currency : "USD" }}
+        </span>
+        <span style="font-weight: bold">
+          {{ calcPriceAfterSale(product.maxPrice, product.productSale) | currency: "USD" }}
+        </span>
+      </ng-template>
+    </div>
+  </ng-container>
+
+
+
+  <ng-template #twoPriceBlock>
+    <div class="product-price">
+      <ng-container *ngIf="product.productSale === null; else discountBlock2">
+        <span style="font-weight: bold">
+          {{ product.minPrice | currency : "USD" }}
+            &ndash;
+          {{ product.maxPrice | currency : "USD" }}
+        </span>
+      </ng-container>
+      <ng-template #discountBlock2>
+        <span class="old-price mr-5">
+          {{ product.minPrice | currency : "USD" }}
+            &ndash;
+          {{ product.maxPrice | currency : "USD" }}
+        </span>
+        <span style="font-weight: bold">
+          {{ calcPriceAfterSale(product.minPrice, product.productSale) | currency: "USD" }}
+            &ndash;
+          {{ calcPriceAfterSale(product.maxPrice, product.productSale) | currency: "USD" }}
+        </span>
+      </ng-template>
+    </div>
+  </ng-template>
+</ng-container>
+
+
+<ng-template #chosenVariant>
+  <div class="product-price">
+    <ng-container *ngIf="product.productSale === null; else discountBlock">
+      <span class="font-weight-bold">
+        {{ selectedVariant.price | currency : "USD" }}
+      </span>
+    </ng-container>
+
+    <ng-template #discountBlock>
+      <span class="old-price mr-5">
+        {{ selectedVariant.price | currency : "USD" }}
+      </span>
+      <span style="font-weight: bold">
+        {{ calcPriceAfterSale(selectedVariant.price, product.productSale) | currency: "USD" }}
+      </span>
+    </ng-template>
+  </div>
+</ng-template>

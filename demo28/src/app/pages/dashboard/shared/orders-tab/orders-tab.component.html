@@ -1,0 +1,185 @@
+<div class="row">
+  <div class="col-12">
+    <form [formGroup]="searchFormGroup" (submit)="searchOrder()">
+      <div class="row">
+        <div class="col-5 pl-0">
+          <div class="header-search-wrapper">
+            <input type="text" class="form-control w-100" placeholder="Search by tracking number ..."
+              formControlName="searchTerm" />
+          </div>
+        </div>
+        <div class="col-4 pr-0">
+          <select class="form-control w-100" formControlName="sort">
+            <option [ngValue]="null">Sort by ...</option>
+            <option [ngValue]="'price'">Total Price</option>
+            <option [ngValue]="'newest'">Newest</option>
+          </select>
+        </div>
+        <div class="col-3">
+          <button class="btn btn-outline-primary-2 mr-3">
+            Search
+            <i class="icon-long-arrow-right"></i>
+          </button>
+          <button class="btn btn-outline-primary-2" (click)="reset($event)"
+              style="max-width: 100% !important; min-width: 50px !important; padding-left: 0; padding-right: 0;">
+            <i class="icon-refresh"></i>
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <ng-container *ngIf="loadedOrders; else loadingBlock">
+    <ng-container *ngIf="orders.length == 0; else ordersBlock">
+      <p>No order found.</p>
+    </ng-container>
+    <ng-template #ordersBlock>
+      <div class="col-lg-6 col-md-12">
+        <div class="row border border-primary mb-2" *ngFor="let order of orders"
+          (click)="selectOrderDetail(order.orderId)">
+          <ng-container [ngTemplateOutlet]="orderTemplate" [ngTemplateOutletContext]="{ order: order }">
+          </ng-container>
+        </div>
+      </div>
+      <ng-container *ngIf="selectedOrder">
+        <aside class="col-lg-6 col-md-12">
+          <div class="row">
+            <div class="summary">
+              <h3 class="summary-title">
+                Your Order #{{selectedOrder.orderTrackingNumber}}
+                <br>
+                <p class="mt-2">
+                  <span class="font-weight-bold">Order Date: </span>
+                  {{selectedOrder.createdAt | date:'full'}}
+                </p>
+              </h3>
+              <table class="table table-summary">
+                <thead>
+                  <tr>
+                    <th width="40%">Product</th>
+                    <th width="60%">Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let orderDetail of selectedOrder.orderDetails">
+                    <td (click)="navigateProductDetailById(orderDetail.productId)"
+                      [style.cursor]="orderDetail.productId != null ? 'pointer' : 'default'">
+                      <div>
+                        {{ orderDetail.productName}}
+                      </div>
+                      <div>
+                        {{ "(Size: " + orderDetail.size + ")" }}
+                        {{ orderDetail.price | currency:"USD" }}
+                        {{ " * " + orderDetail.quantity}}
+                      </div>
+                    </td>
+                    <td>
+                      {{ orderDetail.price * orderDetail.quantity | currency: "USD"}}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Shipping Address:</td>
+                    <td>
+                      {{selectedOrder.address}}
+                    </td>
+                  </tr>
+                  <tr *ngIf="selectedOrder.couponCode != null">
+                    <td>Applied Coupon:</td>
+                    <td>
+                      Code: {{selectedOrder.couponCode}} <br>
+                      Discount: {{selectedOrder.couponDiscount}}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Payment Method:</td>
+                    <td>
+                      {{selectedOrder.paymentMethod.methodName}} <br>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Order Status</td>
+                    <td>
+                      <ng-container [ngTemplateOutlet]="orderStatusTemplate"
+                        [ngTemplateOutletContext]="{orderStatus: selectedOrder.orderStatus}">
+                      </ng-container>
+                    </td>
+                  </tr>
+                  <tr class="summary-total">
+                    <td>Total:</td>
+                    <td>{{ selectedOrder.totalPrice | currency: "USD" }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </aside>
+      </ng-container>
+      <div class="col-12">
+        <molla-pagination
+          [perPage]="filters.pageSize"
+          [total]="filters.totalElements"
+          *ngIf="filters != null && filters.totalElements > filters.pageSize">
+        </molla-pagination>
+      </div>
+    </ng-template>
+  </ng-container>
+</div>
+
+
+<ng-template #loadingBlock>
+  Loading...
+</ng-template>
+
+<ng-template #orderTemplate let-order="order">
+  <div class="col-12" style="cursor: pointer">
+    <p><span class="font-weight-bold">Tracking Number: </span>{{order.orderTrackingNumber}}</p>
+    <div class="row">
+      <div class="col-6">
+        <p>
+          <span class="font-weight-bold">Coupon Applied: </span>
+          {{ order.couponCode !== null ? order.couponCode : 'NONE' }}
+        </p>
+      </div>
+      <div class="col-6">
+        <p>
+          <span class="font-weight-bold">Payment method: </span>
+          {{order.paymentMethod.methodName}}
+        </p>
+      </div>
+      <div class="col-6">
+        <p><span class="font-weight-bold">Total Quantity: </span>{{order.totalQuantity}}</p>
+      </div>
+      <div class="col-6">
+        <p><span class="font-weight-bold">Total Price: </span>{{order.totalPrice | currency: 'USD'}}
+        </p>
+      </div>
+      <div class="col-6">
+        <p><span class="font-weight-bold">Created At: </span>{{order.createdAt | date: 'short'}}</p>
+      </div>
+      <div class="col-6 d-flex align-items-center">
+        <p class="font-weight-bold">Status:</p>
+        <ng-container [ngTemplateOutlet]="orderStatusTemplate"
+          [ngTemplateOutletContext]="{orderStatus: order.orderStatus}">
+        </ng-container>
+      </div>
+      <div class="col-12">
+        <p><span class="font-weight-bold">Shipping Address: </span>{{order.address}}</p>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #orderStatusTemplate let-orderStatus="orderStatus">
+  <div class="pl-3" *ngIf="orderStatus.statusName==='Canceled'">
+    <h6><span class="badge badge-pill badge-danger">Canceled</span></h6>
+  </div>
+  <div class="pl-3" *ngIf="orderStatus.statusName==='Hanling'">
+    <h6><span class="badge badge-pill badge-info">Handling</span></h6>
+  </div>
+  <div class="pl-3" *ngIf="orderStatus.statusName==='Delivering'">
+    <h6><span class="badge badge-pill badge-warning">Delivering</span></h6>
+  </div>
+  <div class="pl-3" *ngIf="orderStatus.statusName==='Completed'">
+    <h6><span class="badge badge-pill badge-success">Completed</span></h6>
+  </div>
+</ng-template>

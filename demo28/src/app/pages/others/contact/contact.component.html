@@ -1,0 +1,171 @@
+<main class="main">
+  <nav class="breadcrumb-nav border-0 mb-0">
+    <div class="container">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <a routerLink="/">Home</a>
+        </li>
+        <li class="breadcrumb-item active">Contact Us</li>
+      </ol>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="page-header page-header-big text-center"
+      style="background-image: url('assets/images/about/contact.png')">
+      <h1 class="page-title text-white">Contact us<span class="text-white">keep in touch with us</span></h1>
+    </div>
+  </div>
+
+  <div class="page-content pb-0">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-6 mb-2 mb-lg-0">
+          <h2 class="title mb-1">Contact Information</h2>
+          <p class="mb-3">Vestibulum volutpat, lacus a ultrices sagittis, mi neque euismod dui, eu pulvinar
+            nunc sapien ornare nisl. Phasellus pede arcu, dapibus eu, fermentum et, dapibus sed, urna.</p>
+          <div class="row">
+            <div class="col-sm-7">
+              <div class="contact-info">
+                <h3>The Office</h3>
+
+                <ul class="contact-list">
+                  <li>
+                    <i class="icon-map-marker"></i>
+                    36/5 D5 street, Binh Thanh
+                  </li>
+                  <li>
+                    <i class="icon-phone"></i>
+                    <a href="tel:#">+8412345678</a>
+                  </li>
+                  <li>
+                    <i class="icon-envelope"></i>
+                    <a href="mailto:#">nguyenphu1147@gmail.com</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="col-sm-5">
+              <div class="contact-info">
+                <h3>The Office</h3>
+
+                <ul class="contact-list">
+                  <li>
+                    <i class="icon-clock-o"></i>
+                    <span class="text-dark">Monday-Saturday</span> <br>11am-7pm ET
+                  </li>
+                  <li>
+                    <i class="icon-calendar"></i>
+                    <span class="text-dark">Sunday</span> <br>11am-6pm ET
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <h2 class="title mb-1">Got Any Questions?
+            <span style="font-size: 16px;">(You have to log in to send message)</span>
+          </h2>
+          <p class="mb-2">Use the form below to get in touch with the sales team</p>
+
+          <form class="contact-form mb-3" [formGroup]="contactForm" (submit)="submitContact()">
+            <div class="row">
+              <div class="col-sm-6">
+                <label for="cname" class="sr-only">Full Name</label>
+                <input type="text" class="form-control" id="cname" placeholder="Full Name *" formControlName="fullName">
+
+                <div class="alert alert-danger mb-1" *ngIf="contactForm.get('fullName').invalid &&
+				            (contactForm.get('fullName').dirty || contactForm.get('fullName').touched)">
+                  <div *ngIf="contactForm.get('fullName').errors['notblank']">
+                    Full Name is required
+                  </div>
+                  <div *ngIf="contactForm.get('fullName').errors['minlength']">
+                    Full Name must have at least 3 character
+                  </div>
+                  <div *ngIf="contactForm.get('fullName').errors['maxlength']">
+                    Full Name must not exceed 100 characters
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-sm-6">
+                <label for="cemail" class="sr-only">Email</label>
+                <input type="email" class="form-control" id="cemail" placeholder="Email *" formControlName="email">
+
+                <div class="alert alert-danger mb-1" *ngIf="contactForm.get('email').invalid &&
+						        (contactForm.get('email').dirty || contactForm.get('email').touched)">
+                  <div *ngIf="contactForm.get('email').errors['notblank']">
+                    Email is required
+                  </div>
+                  <div *ngIf="contactForm.get('email').errors['pattern']">
+                    Invalid email format
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-sm-6">
+                <label for="cphone" class="sr-only">Phone Number</label>
+                <input type="tel" class="form-control" id="cphone" placeholder="Phone Number"
+                  formControlName="phoneNumber">
+                <div class="alert alert-danger mb-1" *ngIf="contactForm.get('phoneNumber').invalid &&
+				            (contactForm.get('phoneNumber').dirty || contactForm.get('phoneNumber').touched)">
+                  <div *ngIf="contactForm.get('phoneNumber').errors['pattern']">
+                    Phone number must be exactly 10 digits in length and can only contain numerical digits
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-sm-6">
+                <label for="csubject" class="sr-only">Subject</label>
+                <input type="text" class="form-control" placeholder="Subject" formControlName="subject">
+
+                <div class="alert alert-danger mb-1" *ngIf="contactForm.get('subject').invalid &&
+				            (contactForm.get('subject').dirty || contactForm.get('subject').touched)">
+                  <div *ngIf="contactForm.get('subject').errors['minlength']">
+                    Full Name must have at least 3 character
+                  </div>
+                  <div *ngIf="contactForm.get('subject').errors['maxlength']">
+                    Full Name must not exceed 100 characters
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-12">
+                <label for="cmessage" class="sr-only">Message</label>
+                <textarea class="form-control" cols="30" rows="4" id="cmessage" placeholder="Message *"
+                  formControlName="message">
+
+                </textarea>
+                <div class="alert alert-danger mb-1" *ngIf="contactForm.get('message').invalid &&
+                      (contactForm.get('message').dirty || contactForm.get('message').touched)">
+                  <div *ngIf="contactForm.get('message').errors['notblank']">
+                    Message is required
+                  </div>
+                  <div *ngIf="contactForm.get('message').errors['minlength']">
+                    Message must have at least 3 character
+                  </div>
+                  <div *ngIf="contactForm.get('message').errors['maxlength']">
+                    Message must not exceed 200 characters
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-outline-primary-2 btn-minwidth-sm" [disabled]="!authenService.isLoggedIn()">
+              <span>SUBMIT</span>
+              <i class="icon-long-arrow-right"></i>
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <hr class="mt-4 mb-5">
+    </div>
+  </div>
+</main>

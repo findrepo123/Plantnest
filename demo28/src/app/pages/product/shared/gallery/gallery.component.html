@@ -1,0 +1,17 @@
+<div class="product-lg position-relative gallery" style="min-height: 376px;">
+  <span class="product-label label-sale" *ngIf="product.sale">
+    Sale
+    {{
+      (product.productSale.productSaleType.typeName == 'Fixed' ?
+      "$" + product.productSale.discount :
+      product.productSale.discount + "%") }}
+    </span>
+  <span class="product-label label-top" *ngIf="product.top">Top</span>
+  <span class="product-label label-new" style="margin-top: 30px" *ngIf="product.new_">New</span>
+
+    <owl-carousel [carouselClasses]="'product-gallery-carousel owl-full owl-nav-dark'" [options]="options">
+        <molla-image class="d-block position-relative" [src]="item.src"
+            *ngFor="let item of this.album;let i = index;">
+        </molla-image>
+    </owl-carousel>
+</div>

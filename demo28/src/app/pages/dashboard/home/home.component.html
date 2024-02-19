@@ -1,0 +1,61 @@
+<main class="main">
+  <div class="page-header text-center" style="background-image: url('assets/images/page-header-bg.jpg')">
+    <div class="container">
+      <h1 class="page-title">My Account</h1>
+    </div>
+  </div>
+  <nav class="breadcrumb-nav mb-3">
+    <div class="container">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <a routerLink="/">Home</a>
+        </li>
+        <li class="breadcrumb-item active">My Account</li>
+      </ol>
+    </div>
+  </nav>
+
+  <div class="page-content">
+    <div class="dashboard">
+      <div class="container">
+        <div class="row">
+          <aside class="col-md-4 col-lg-3">
+            <ul class="nav nav-dashboard flex-column mb-3 mb-md-0" role="tablist" tabClick>
+              <li class="nav-item" *ngFor="let tab of tabs">
+                <a class="nav-link"
+                  [class.active]="currentFragment == tab.fragment"
+                  routerLink="."
+                  [fragment]="tab.fragment"
+                  role="tab">
+                  {{tab.label}}
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" routerLink="/" (click)="logout()">Sign Out</a>
+              </li>
+            </ul>
+          </aside>
+
+          <div class="col-md-8 col-lg-9">
+            <div class="tab-content">
+              <ul ngbNav #nav="ngbNav">
+                <li [ngbNavItem]="'orders'">
+                  <ng-template ngbNavContent>
+                    <dashboard-orders-tab></dashboard-orders-tab>
+                  </ng-template>
+                </li>
+                <li [ngbNavItem]="'account-details'">
+                  <ng-template ngbNavContent>
+                    <dashboard-account-details-tab></dashboard-account-details-tab>
+                  </ng-template>
+                </li>
+              </ul>
+              <div [ngbNavOutlet]="nav"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>

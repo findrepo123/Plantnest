@@ -1,0 +1,15 @@
+<div class="products mb-3">
+  <p class="no-results" *ngIf="products.length == 0 && loaded else resultBlock">No products matching your selection.
+  </p>
+
+  <ng-template #resultBlock>
+    <div>
+      <div *ngIf="!loaded else listBlock">
+        <div class="skel-pro skel-pro-list" *ngFor="let item of [1,2,3,4,5]"></div>
+      </div>
+      <ng-template #listBlock>
+        <molla-product-nine [product]="product" *ngFor="let product of products"></molla-product-nine>
+      </ng-template>
+    </div>
+  </ng-template>
+</div>

@@ -1,0 +1,163 @@
+<main class="main">
+    <molla-page-header title="Shopping Cart" subtitle="Shop"></molla-page-header>
+
+    <nav class="breadcrumb-nav">
+        <div class="container">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a routerLink="/">Home</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a routerLink="/shop/list">Shop</a>
+                </li>
+                <li class="breadcrumb-item active">Shopping Cart</li>
+            </ol>
+        </div>
+    </nav>
+
+    <div class="page-content">
+        <div class="cart" *ngIf="cart != null">
+            <div class="container">
+                <div class="row" *ngIf="cart.cartDetails.length == 0 else cartBlock">
+                    <div class="col-12">
+                        <div class="cart-empty-page text-center">
+                            <i class="cart-empty icon-shopping-cart" style="line-height: 1; font-size: 15rem"></i>
+                            <p class="px-3 py-2 cart-empty mb-3">No products added to the cart</p>
+                            <p class="return-to-shop mb-0">
+                                <a routerLink="/shop/list" class="btn btn-primary">RETURN TO SHOP</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <ng-template #cartBlock>
+                    <div class="row">
+                        <div class="col-lg-9">
+                            <table class="table table-cart table-mobile">
+                                <thead>
+                                    <tr>
+                                        <th>Product</th>
+                                        <th class="text-center">Size</th>
+                                        <th class="text-center">Price</th>
+                                        <th class="text-center">Quantity</th>
+                                        <th class="text-center">Total</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    <tr *ngFor="let cartDetail of cart.cartDetails">
+                                        <td class="product-col">
+                                            <div class="product">
+                                                <figure class="product-media">
+                                                    <a [routerLink]="'/product/detail/' + cartDetail.product.slug">
+                                                        <molla-image
+                                                            [src]="PRODUCT_IMAGE_DIRECTORY + cartDetail.product.imageUrl"
+                                                            alt="Product">
+                                                        </molla-image>
+                                                    </a>
+                                                </figure>
+                                                <h3 class="product-title">
+                                                    <a [routerLink]="'/product/detail/'+ cartDetail.product.slug">
+                                                        {{ cartDetail.product.productName }}
+                                                    </a>
+                                                </h3>
+                                            </div>
+                                        </td>
+                                        <td class="price-col text-center">
+                                            <span
+                                                class="d-inline-flex align-items-center justify-content-center rounded-circle border p-2 m-2"
+                                                style="width: 35px; height: 35px; color: #61ab00">
+                                                {{ cartDetail.productVariant.productSize.sizeName }}
+                                            </span>
+                                        </td>
+                                        <td class="price-col text-center">
+                                            <div class="old-price">
+                                                {{ cartDetail.productVariant.price | currency: 'USD' }}
+                                            </div>
+                                            <div style="font-weight: bold; color: #61ab00">
+                                                {{ productService.calcPriceAfterSale(cartDetail.productVariant.price,
+                                                cartDetail.product.productSale) |
+                                                currency: "USD"}}
+                                            </div>
+                                        </td>
+                                        <td class="quantity-col  text-center">
+                                            <molla-quantity-input adClass="cart-product-quantity"
+                                                [value]="cartDetail.quantity" [max]="cartDetail.productVariant.quantity"
+                                                (changeQty)="onChangeQty($event, cartDetail)">
+                                            </molla-quantity-input>
+                                        </td>
+                                        <td class="total-col  text-center">
+                                            {{ cartService.getCartDetailTotalPrice(cartDetail) | currency: "USD"}}
+                                        </td>
+                                        <td class="remove-col">
+                                            <button class="btn-remove" (click)="remove(cartDetail)">
+                                                <i class="icon-close"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <div class="cart-bottom">
+                                <div class="cart-discount">
+                                  <molla-apply-coupon (availableCoupon)="applyCoupon($event)"></molla-apply-coupon>
+                                </div>
+
+                                <a href="javascript:;" class="btn btn-outline-dark-2 btn-cart-update disabled"
+                                    (click)="updateCart( $event )"><span>UPDATE CART</span><i
+                                        class="icon-refresh"></i></a>
+                            </div>
+                        </div>
+                        <aside class="col-lg-3">
+                            <div class="summary summary-cart">
+                                <h3 class="summary-title">Cart Total</h3>
+
+                                <table class="table table-summary">
+                                    <tbody>
+                                        <tr class="summary-subtotal">
+                                            <td>Subtotal:</td>
+                                            <td>{{ subTotalPrice | currency: "USD" }}</td>
+                                        </tr>
+
+                                        <tr class="summary-shipping">
+                                            <td>Shipping:</td>
+                                            <td>&nbsp;</td>
+                                        </tr>
+
+                                        <tr class="summary-shipping-row" *ngFor="let shipping of shippingData; let i = index">
+                                            <td>
+                                                <div class="custom-control custom-radio">
+                                                    <input type="radio" [id]="'shipping' + i" [name]="'shipping'"
+                                                        class="custom-control-input"
+                                                        (change)="changeShipping(shipping)"
+                                                        [checked]="shipping.shippingName == 'Free Ship'">
+                                                    <label class="custom-control-label" [for]="'shipping' + i">
+                                                        {{shipping.shippingName}}
+                                                    </label>
+                                                </div>
+                                            </td>
+                                            <td>{{shipping.cost | currency: "USD"}}</td>
+                                        </tr>
+                                        <tr class="summary-total">
+                                            <td>Total:</td>
+                                            <td>{{ totalPrice | currency: "USD"}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                                <a routerLink="/shop/checkout" class="btn btn-outline-primary-2 btn-order btn-block">
+                                    PROCEED TO CHECKOUT
+                                </a>
+                            </div>
+
+                            <a routerLink="/shop/list" class="btn btn-outline-dark-2 btn-block mb-3">
+                                <span>CONTINUE SHOPPING</span>
+                                <i class="icon-refresh"></i>
+                            </a>
+                        </aside>
+                    </div>
+                </ng-template>
+            </div>
+        </div>
+    </div>
+</main>

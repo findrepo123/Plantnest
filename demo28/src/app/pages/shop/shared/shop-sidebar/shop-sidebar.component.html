@@ -1,0 +1,79 @@
+<div class="sidebar-shop" [ngClass]="toggle ? 'sidebar-filter' : 'sidebar'">
+  <div [class.sidebar-filter-wrapper]="toggle">
+    <div class="widget widget-clean">
+      <label>Filters:</label>
+      <a [routerLink]="" class="sidebar-filter-clear">Clean All</a>
+    </div>
+
+    <div class="widget widget-collapsible">
+      <h3 class="widget-title mb-2">
+        <a data-toggle="collapse" href="#widget-1" role="button" aria-expanded="true" aria-controls="widget-1">
+          Catalog
+        </a>
+      </h3>
+      <div class="collapse show" id="widget-1">
+        <div class="widget-body pt-0">
+          <div class="filter-items filter-items-count">
+            <div class="filter-item" *ngFor="let catalog of catalogs">
+              <a [routerLink]=""
+                [queryParams]="{catalog: getUrlForAttrs('catalog', catalog.catalogName.toLowerCase()), page: 1}"
+                [class.selected]="containsAttrInUrl('catalog', catalog.catalogName.toLowerCase())"
+                queryParamsHandling="merge"
+                routerLinkActive="active">
+                {{ catalog.catalogName }}
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="widget widget-collapsible">
+      <h3 class="widget-title mb-2">
+        <a data-toggle="collapse" href="#widget-2" role="button" aria-expanded="true" aria-controls="widget-1">
+          Planting Difficulty Level
+        </a>
+      </h3>
+      <div class="collapse show" id="widget-2">
+        <div class="widget-body pt-0">
+          <div class="filter-items filter-items-count">
+            <div class="filter-item" *ngFor="let level of levels">
+              <a [routerLink]="" routerLinkActive="active"
+                [queryParams]="{level: getUrlForAttrs('level', level.level.toLowerCase()), page: 1}"
+                [class.selected]="containsAttrInUrl('level', level.level.toLowerCase())"
+                queryParamsHandling="merge">
+                {{ level.level }}
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="widget widget-collapsible">
+      <h3 class="widget-title mb-2">
+        <a data-toggle="collapse" href="#widget-3" role="button" aria-expanded="true" aria-controls="widget-1">
+          Sizes
+        </a>
+      </h3>
+      <div class="collapse show" id="widget-3">
+        <div class="widget-body pt-0">
+          <div class="filter-items filter-items-count">
+            <div class="d-flex flex-wrap">
+              <span class="d-inline-flex align-items-center justify-content-center rounded-circle border p-2 m-2"
+                style="width: 35px; height: 35px" *ngFor="let size of sizes">
+                <a [routerLink]="" routerLinkActive="active" class="text-decoration-none"
+                  [queryParams]="{size: getUrlForAttrs('size', size.sizeName.toLowerCase()), page: 1}"
+                  [class.selected]="containsAttrInUrl('size', size.sizeName.toLowerCase())"
+                  queryParamsHandling="merge">
+                  {{ size.sizeName }}
+                </a>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

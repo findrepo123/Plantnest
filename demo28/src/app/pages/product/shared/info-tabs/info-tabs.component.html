@@ -1,0 +1,142 @@
+<div class="product-details-tab">
+  <ul ngbNav #nav="ngbNav" class="justify-content-center nav nav-pills">
+
+    <li ngbNavItem>
+      <a ngbNavLink>
+        Care Guide
+      </a>
+      <ng-template ngbNavContent>
+        <molla-accordion [adClass]="accordion.adClass">
+          <molla-card *ngFor="let card of accordion.cards; let isFirst = first" [adClass]="accordion.cardAclass"
+            [title]="card.title" [icon]="accordion.showIcon? card.icon : null" [show]="isFirst ? true : false">
+            {{ card.body }}
+          </molla-card>
+        </molla-accordion>
+      </ng-template>
+    </li>
+    <li ngbNavItem>
+      <a ngbNavLink>
+        Description
+      </a>
+      <ng-template ngbNavContent>
+        <div class="product-desc-content">
+          <h3>Product Information</h3>
+          <p [innerHTML]="product.description"></p>
+        </div>
+      </ng-template>
+    </li>
+    <li ngbNavItem>
+      <a ngbNavLink (click)="loadReviews()">
+        Reviews ({{product.totalRating}})
+      </a>
+      <ng-template ngbNavContent>
+        <div class="reviews">
+          <h3>Reviews ({{ product.totalRating }})</h3>
+          <div class="review" *ngIf="loadedReview">
+            <ng-container [ngTemplateOutlet]="reviewTemplate" [ngTemplateOutletContext]="{reviews : reviews}"
+              *ngIf="reviews">
+            </ng-container>
+          </div>
+        </div>
+        <ng-container *ngIf="authenService.isLoggedIn(); else haveToLogin">
+          <div class="reply">
+            <div class="title-wrapper text-left">
+              <h3 class="title title-simple text-left text-normal">Add a Review
+              </h3>
+            </div>
+            <div class="rating-form" style="margin-bottom: 0 !important;">
+              <label for="rating" class="text-dark">Your rating * </label>
+              <span class="rating-stars selected">
+                <a [class]="'star-' + num " href="javascript:;" (click)="setRating($event, num)"
+                  *ngFor="let num of [1,2,3,4,5]">{{ num }}
+                </a>
+              </span>
+              <div class="span">
+                <h6 class="ml-2 mt-1">
+                  {{ commentFormGroup.get('ratingStar').value != null ?
+                  getCommentTitle(commentFormGroup.get('ratingStar').value) : ""}}
+                </h6>
+              </div>
+            </div>
+            <div class="alert alert-danger mb-1" *ngIf="commentFormGroup.get('ratingStar').invalid &&
+                (commentFormGroup.get('ratingStar').dirty ||
+                commentFormGroup.get('ratingStar').touched)">
+              <div *ngIf="commentFormGroup.get('ratingStar').errors['required']">
+                Comment content is required
+              </div>
+            </div>
+            <form [formGroup]="commentFormGroup" (submit)="submitComment()">
+              <div class="row">
+                <div class="col-md-6">
+                  <input type="text" class="form-control" id="reply-name" name="reply-name" placeholder="Name *"
+                    formControlName="fullName" />
+                </div>
+                <div class="col-md-6">
+                  <input type="email" class="form-control" id="reply-email" name="reply-email" placeholder="Email *"
+                    formControlName="email" />
+                </div>
+              </div>
+              <textarea id="reply-message" cols="30" rows="6" class="form-control mb-2 border border-success"
+                placeholder="Comment *" formControlName="content">
+              </textarea>
+              <div class="alert alert-danger" *ngIf="commentFormGroup.get('content').invalid &&
+	                        (commentFormGroup.get('content').dirty ||
+                          commentFormGroup.get('content').touched)">
+                <div *ngIf="commentFormGroup.get('content').errors['required']">
+                  Comment content is required
+                </div>
+                <div *ngIf="commentFormGroup.get('content').errors['minlength']">
+                  Comment content must have at least 3 character
+                </div>
+                <div *ngIf="commentFormGroup.get('content').errors['maxlength']">
+                  Comment content must not exceed 300 characters
+                </div>
+              </div>
+
+              <button type="submit" class="btn btn-primary" [disabled]="commentFormGroup.get('content').value == null">
+                Submit
+              </button>
+            </form>
+          </div>
+        </ng-container>
+        <ng-template #haveToLogin>
+          <h4>You have to log in to comment</h4>
+        </ng-template>
+
+      </ng-template>
+    </li>
+  </ul>
+  <div [ngbNavOutlet]="nav"></div>
+</div>
+
+<ng-template #reviewTemplate let-reviews="reviews">
+  <div class="row">
+    <ng-container *ngFor="let review of reviews">
+      <div class="col-6 no-gutters">
+        <div class="row">
+          <div class="col-auto">
+            <h4>
+              <img class="mx-auto rounded-circle border border-success"
+                style="width: 70px; height: 70px; object-fit: cover;"
+                [src]="review.imageUrl != null ? ACCOUNT_IMAGE_DIRECTORY + review.imageUrl : 'assets/images/no-image-user.png'"
+                alt="">
+            </h4>
+            <div class="ratings-container justify-content-center">
+              <div class="ratings">
+                <div class="ratings-val" [style.width]="review.rating * 20 + '%'"></div>
+                <span class="tooltip-text">{{ review.rating.toFixed(2) }}</span>
+              </div>
+            </div>
+            <div class="text-center">{{review.createdAt | date:'mediumDate'}}</div>
+          </div>
+          <div class="col">
+            <h4>{{review.fullName + ' - ' +getCommentTitle(review.rating)}}</h4>
+            <div class="review-content">
+              <p>{{review.content}}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</ng-template>

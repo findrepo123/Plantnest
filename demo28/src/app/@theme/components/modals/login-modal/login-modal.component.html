@@ -1,0 +1,25 @@
+<div class="modal-body">
+    <button type="button" class="close" (click)="closeModal()">
+        <span aria-hidden="true"><i class="icon-close"></i></span>
+    </button>
+
+    <div class="form-box">
+        <div class="form-tab nav-fill">
+            <ul ngbNav #nav="ngbNav" class="justify-content-center nav nav-pills">
+                <li ngbNavItem [ngbNavItem]="1">
+                    <a ngbNavLink>Sign In</a>
+                    <ng-template ngbNavContent>
+                      <molla-login-form (loginSuccess)="($event) ? closeModal() : null"></molla-login-form>
+                    </ng-template>
+                </li>
+                <li ngbNavItem [ngbNavItem]="2">
+                    <a ngbNavLink>Register</a>
+                    <ng-template ngbNavContent>
+                      <molla-register-form></molla-register-form>
+                    </ng-template>
+                </li>
+            </ul>
+            <div [ngbNavOutlet]="nav"></div>
+        </div>
+    </div>
+</div>

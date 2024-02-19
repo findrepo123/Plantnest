@@ -1,0 +1,92 @@
+<main class="main">
+  <molla-page-header title="Checkout" subtitle="Shop"></molla-page-header>
+  <nav class="breadcrumb-nav">
+    <div class="container">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <a routerLink="/">Home</a>
+        </li>
+        <li class="breadcrumb-item">
+          <a routerLink="/shop/list">Shop</a>
+        </li>
+        <li class="breadcrumb-item active">Checkout</li>
+      </ol>
+    </div>
+  </nav>
+
+  <div class="page-content">
+    <div class="checkout">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-9">
+            <molla-billing-information></molla-billing-information>
+          </div>
+          <aside class="col-lg-3 col-md-12">
+            <div class="summary">
+              <h3 class="summary-title">Your Order</h3>
+
+              <table class="table table-summary">
+                <thead>
+                  <tr>
+                    <th>Product</th>
+                    <th>Total</th>
+                  </tr>
+                </thead>
+
+                <tbody *ngIf="cart != null">
+                  <tr *ngFor="let cartDetail of cart.cartDetails">
+                    <td>
+                      <div>
+                        <a [routerLink]="['/product/detail/'+ cartDetail.product.slug]">
+                          {{ cartDetail.product.productName}}
+                        </a>
+                      </div>
+                      <div>
+                        {{ "(Size: " + cartDetail.productVariant.productSize.sizeName + ")" }}
+                        {{ productService.calcPriceAfterSale(cartDetail.productVariant.price,
+                        cartDetail.product.productSale) | currency:"USD" }}
+                        {{ " * " + cartDetail.quantity}}
+                      </div>
+                    </td>
+                    <td>
+                      {{ cartService.getCartDetailTotalPrice(cartDetail) | currency: "USD"}}
+                    </td>
+                  </tr>
+                  <tr class="summary-subtotal">
+                    <td>Subtotal:</td>
+                    <td>{{ subTotalPrice | currency: "USD" }}</td>
+                  </tr>
+                  <tr *ngIf="appliedShipping != null">
+                    <td>Shipping:</td>
+                    <td>
+                      {{appliedShipping.shippingName}} <br>
+                      Cost: {{appliedShipping.cost | currency: "USD"}}
+                    </td>
+                  </tr>
+                  <tr *ngIf="appliedCoupon != null">
+                    <td>Applied Coupon:</td>
+                    <td>
+                      Code: {{appliedCoupon.code}} <br>
+                      Discount: {{couponService.getDiscountValue(appliedCoupon)}}
+                    </td>
+                  </tr>
+                  <tr class="summary-total">
+                    <td>Total:</td>
+                    <td>{{ totalPrice | currency: "USD" }}</td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <molla-payment-methods></molla-payment-methods>
+
+              <button type="submit" class="btn btn-outline-primary-2 btn-order btn-block" (click)="placeOrder()">
+                <span class="btn-text">Place Order</span>
+                <span class="btn-hover-text">Proceed to Checkout</span>
+              </button>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

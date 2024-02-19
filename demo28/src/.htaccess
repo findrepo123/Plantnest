@@ -1,0 +1,13 @@
+Options FollowSymLinks ExecCGI
+
+RewriteEngine On
+RewriteBase /
+
+RewriteCond %{HTTPS} !=on
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301,NE]
+
+# If the requested file is not an existing directory or file
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+# need to add the ^4 in order to avoid triggering a loop
+RewriteRule ^[^4]* /index.html [L,S=4000]

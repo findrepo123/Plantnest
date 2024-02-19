@@ -1,0 +1,6 @@
+@media (max-width: 768px) {
+  /* Apply the hide-on-mobile class to hide elements */
+  .hide-on-mobile {
+    display: none !important; /* Use !important to override any other styles */
+  }
+}

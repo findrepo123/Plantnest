@@ -1,0 +1,37 @@
+
+<div class="alert alert-danger mt-1" *ngIf="errorMessage != null && errorMessage != ''">
+      {{errorMessage}}
+</div>
+<form (submit)="login()" [formGroup]="loginFormGroup">
+  <div class="form-group">
+      <label for="singin-email">Username *</label>
+      <input type="text" class="form-control" id="singin-email" name="singin-email" required
+          formControlName="username">
+      <div class="alert alert-danger mt-1"
+          *ngIf="loginFormGroup.get('username').invalid && (loginFormGroup.get('username').dirty || loginFormGroup.get('username').touched)">
+          <div *ngIf="loginFormGroup.get('username').errors['required']">
+              Username is required
+          </div>
+      </div>
+  </div>
+
+  <div class="form-group">
+      <label for="singin-password">Password *</label>
+      <input type="password" class="form-control" id="singin-password" name="singin-password"
+          required formControlName="password">
+      <div class="alert alert-danger mt-1"
+          *ngIf="loginFormGroup.get('password').invalid && (loginFormGroup.get('password').dirty || loginFormGroup.get('password').touched)">
+          <div *ngIf="loginFormGroup.get('password').errors['required']">
+              Password is required
+          </div>
+      </div>
+  </div>
+
+  <div class="form-footer">
+      <button type="submit" class="btn btn-outline-primary-2"
+          [disabled]="loginFormGroup.invalid">
+          <span>LOG IN</span>
+          <i class="icon-long-arrow-right"></i>
+      </button>
+  </div>
+</form>

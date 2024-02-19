@@ -1,0 +1,60 @@
+<div class="header-search">
+  <a href="javascript:;" class="search-toggle" role="button" (click)="onSearchToggle($event)">
+    <i class="icon-search"></i>
+  </a>
+  <form action="#" method="get" (click)="showSearchForm($event)" (submit)="submitSearchForm($event)">
+    <div class="header-search-wrapper">
+      <label for="q" class="sr-only">Search</label>
+      <input type="text" class="form-control" name="searchTerm" id="searchTerm" placeholder="Search product ..."
+        required (input)="searchProducts($event)" />
+
+      <div class="live-search-list" *ngIf="searchTerm.length >= 2">
+        <div class="autocomplete-suggestions" *ngIf="suggestions.length > 0" (click)="goProductPage()">
+          <a [routerLink]="'/product/detail/' + product.slug" class="autocomplete-suggestion"
+            *ngFor="let product of suggestions">
+            <figure class="mb-0 mr-3" style="width: 40px; height: 40px;">
+              <molla-image [src]="PRODUCT_IMAGE_DIRECTORY + product.imageUrl" width="40" height="40" alt="Product"
+                class="bg-transparent">
+              </molla-image>
+            </figure>
+
+            <div class="search-name" [innerHTML]="matchEmphasize(product.productName) | safeContent"></div>
+            <div class="search-price">
+              <div class="product-price mb-0" *ngIf="product.minPrice == product.maxPrice else priceBlock">
+                <div *ngIf="product.productSale != null">
+                  <span class="old-price">
+                    {{ product.minPrice | currency: "USD" }}
+                  </span>
+                  <span class="font-weight-bold">
+                    {{ calcPriceAfterSale(product.minPrice, product.productSale) | currency: "USD" }}
+                  </span>
+                </div>
+                <div *ngIf="product.productSale == null">
+                  ${{ product.minPrice | currency: "USD" }}
+                </div>
+              </div>
+
+              <ng-template #priceBlock>
+                <div class="product-price mb-0 font-weight-bold" *ngIf="product.productSale == null else saleBlock">
+                  ${{product.minPrice.toFixed(2)}} - ${{product.maxPrice.toFixed(2)}}
+                </div>
+                <ng-template #saleBlock>
+                  <div class="product-price mb-0">
+                    <div class="old-price mr-3">
+                      {{ product.minPrice | currency: "USD" }} - {{ product.maxPrice | currency: "USD" }}
+                    </div>
+                    <div class="font-weight-bold">
+                      {{ calcPriceAfterSale(product.minPrice, product.productSale) | currency: "USD" }} -
+                      {{ calcPriceAfterSale(product.maxPrice, product.productSale) | currency: "USD" }}
+                    </div>
+                  </div>
+                </ng-template>
+              </ng-template>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </form>
+</div>

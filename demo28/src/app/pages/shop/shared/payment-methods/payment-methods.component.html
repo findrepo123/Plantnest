@@ -1,0 +1,40 @@
+<molla-accordion adClass="accordion-summary" id="accordion-payment">
+  <div class="card">
+    <div class="card-header" id="heading-3">
+      <h2 class="card-title">
+        <a class="toggle-button collapsed" role="button" data-toggle="collapse" href="#collapse-3" aria-expanded="false"
+          aria-controls="collapse-3" (click)="changePaymentMethods('vnpay')">
+          Vnpay
+        </a>
+      </h2>
+    </div>
+    <div id="collapse-3" class="collapse" aria-labelledby="heading-3" data-parent="#accordion-payment">
+      <div class="card-body">Quisque volutpat mattis eros. Lorem ipsum dolor sit
+        amet, consectetuer adipiscing elit. Donec odio. Quisque volutpat mattis
+        eros.
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header" id="heading-4">
+      <h2 class="card-title">
+        <a class="toggle-button collapsed" role="button" data-toggle="collapse" href="#collapse-4" aria-expanded="false"
+          aria-controls="collapse-4" (click)="changePaymentMethods('paypal')">
+          PayPal
+        </a>
+      </h2>
+    </div>
+    <div id="collapse-4" class="collapse" aria-labelledby="heading-4" data-parent="#accordion-payment">
+      <div class="card-body">
+        <small class="float-right paypal-link">What is PayPal?</small>
+        Nullam malesuada erat ut turpis. Suspendisse urna nibh, viverra non,
+        semper suscipit, posuere a, pede. Donec nec justo eget felis facilisis
+        fermentum.
+      </div>
+    </div>
+  </div>
+  <div class="alert alert-danger mt-1" *ngIf="errorMessage">
+      {{errorMessage}}
+  </div>
+</molla-accordion>

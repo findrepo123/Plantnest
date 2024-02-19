@@ -1,0 +1,28 @@
+<form [formGroup]="couponForm" (submit)="applyCode()">
+  <div class="input-group">
+    <input type="text" class="form-control" placeholder="coupon code" formControlName="code"
+      (focus)="onFocus($event)">
+    <div class="input-group-append">
+      <button class="btn btn-outline-primary-2" type="submit">
+        <i class="icon-long-arrow-right"></i>
+      </button>
+    </div>
+  </div>
+
+  <div class="alert alert-danger mt-1" *ngIf="hasAnyErrors">
+    <div *ngIf="couponForm.get('code').errors['notblank']">
+      Coupon Code is required
+    </div>
+    <div *ngIf="couponForm.get('code').errors['couponNotExist']">
+      Coupon Code does not exist
+    </div>
+    <div *ngIf="couponForm.get('code').errors['couponNotExist'] !== true &&
+        couponForm.get('code').errors['couponCantUse']">
+      Coupon Code cannot be used (it may have expired)
+    </div>
+  </div>
+
+  <div class="alert alert-success mt-1" *ngIf="successMessage">
+    <p style="color: white" [innerHTML]="successMessage"></p>
+  </div>
+</form>

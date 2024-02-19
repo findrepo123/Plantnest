@@ -1,0 +1,19 @@
+<nav class="main-nav">
+  <ul class="menu sf-arrows">
+    <li class="megamenu-container" [class.active]="current=='/'">
+      <a routerLink="/">Home</a>
+    </li>
+    <li [class.active]="current.includes('/shop/list')">
+      <a routerLink="/shop/list">Shop</a>
+    </li>
+    <li [class.active]="current.includes('pages/about')">
+      <a routerLink="/pages/about">About Us</a>
+    </li>
+    <li [class.active]="current.includes('pages/contact')">
+      <a routerLink="/pages/contact">Contact</a>
+    </li>
+    <li>
+      <a href="https://manage.plantnest.online/admin/auth/login" target="_blank">Go Admin</a>
+    </li>
+  </ul>
+</nav>
